@@ -7,8 +7,6 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="/static/mobile.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    
-   
 </head>
 <body>
     <header>
@@ -20,11 +18,11 @@
         <div id="sensor-data">
             <div>
                 <h2>Data Sensor</h2>
-                <div class="sensor"><strong>PH:</strong> <span id="ph" class="highlight">7.2</span></div>
-                <div class="sensor"><strong>DO:</strong> <span id="do" class="highlight">8.5 mg/L</span></div>
-                <div class="sensor"><strong>Suhu:</strong> <span id="suhu" class="highlight">27°C</span></div>
-                <div class="sensor"><strong>GPS Koordinat:</strong> <span id="gps-coordinates" class="highlight">-1.53, 102.05</span></div>
-                <div class="sensor"><strong>Kompas:</strong> <span id="compass" class="highlight">90°</span></div>
+                <div class="sensor"><strong>PH:</strong> <span id="ph" class="highlight"></span></div>
+                <div class="sensor"><strong>DO:</strong> <span id="do" class="highlight"></span></div>
+                <div class="sensor"><strong>Suhu:</strong> <span id="suhu" class="highlight"></span></div>
+                <div class="sensor"><strong>GPS Koordinat:</strong> <span id="gps-coordinates" class="highlight"></span></div>
+                <div class="sensor"><strong>Kompas:</strong> <span id="compass" class="highlight"></span></div>
             </div>
             <footer>Data diperbarui setiap 5 detik</footer>
         </div>
@@ -41,7 +39,7 @@
             maxZoom: 19,
         }).addTo(map);
 
-        // Add markers with coordinates
+        // Add markers with predefined coordinates
         var locations = [
             {lat: -1.49, lng: 102.01, label: "Titik 1"},
             {lat: -1.50, lng: 102.02, label: "Titik 2"},
@@ -54,7 +52,7 @@
                 .bindPopup(location.label);
         });
 
-        // Add GPS marker and compass direction
+        // Add GPS marker
         var gpsMarker = L.circleMarker([-1.53, 102.05], {
             radius: 8,
             color: 'blue',
@@ -69,30 +67,34 @@
             weight: 2
         }).addTo(map);
 
-        // Simulate dynamic updates for sensor data, GPS, and compass
-        function updateSensorData() {
-            document.getElementById('ph').textContent = (6.5 + Math.random() * 1.5).toFixed(2);
-            document.getElementById('do').textContent = (8 + Math.random()).toFixed(2) + ' mg/L';
-            document.getElementById('suhu').textContent = (25 + Math.random() * 5).toFixed(1) + '°C';
+        // Function to update sensor data
+        async function updateSensorData() {
+            try {
+                const response = await fetch("/get-data/keramba");
+                const data = await response.json();
 
-            // Update GPS coordinates
-            var newLat = -1.53 + (Math.random() - 0.5) * 0.01;
-            var newLng = 102.05 + (Math.random() - 0.5) * 0.01;
-            document.getElementById('gps-coordinates').textContent = newLat.toFixed(5) + ', ' + newLng.toFixed(5);
-            gpsMarker.setLatLng([newLat, newLng]);
+                // Update sensor data
+                document.getElementById('ph').textContent = data.ph || 'N/A';
+                document.getElementById('do').textContent = data.do || 'N/A';
+                document.getElementById('suhu').textContent = data.suhu || 'N/A';
+                document.getElementById('gps-coordinates').textContent = `${data.gps.lat}, ${data.gps.lng}`;
+                document.getElementById('compass').textContent = data.compass || 'N/A';
 
-            // Update compass direction
-            var newAngle = Math.floor(Math.random() * 360);
-            document.getElementById('compass').textContent = newAngle + '°';
+                // Update GPS marker on map
+                gpsMarker.setLatLng([data.gps.lat, data.gps.lng]);
 
-            // Update compass line
-            var compassLength = 0.01; // Adjust length as needed
-            var endLat = newLat + compassLength * Math.cos(newAngle * Math.PI / 180);
-            var endLng = newLng + compassLength * Math.sin(newAngle * Math.PI / 180);
-            compassLine.setLatLngs([[newLat, newLng], [endLat, endLng]]);
+                // Update compass line
+                var compassLength = 0.01; // Adjust length as needed
+                var endLat = data.gps.lat + compassLength * Math.cos(data.compass * Math.PI / 180);
+                var endLng = data.gps.lng + compassLength * Math.sin(data.compass * Math.PI / 180);
+                compassLine.setLatLngs([[data.gps.lat, data.gps.lng], [endLat, endLng]]);
+            } catch (error) {
+                console.error('Error fetching sensor data:', error);
+            }
         }
 
-        setInterval(updateSensorData, 5000); // Update every 5 seconds
+        // Update sensor data every 5 seconds
+        setInterval(updateSensorData, 5000);
     </script>
 </body>
 </html>
