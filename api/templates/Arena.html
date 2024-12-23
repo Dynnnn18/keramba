@@ -18,11 +18,11 @@
         <div id="sensor-data">
             <div>
                 <h2>Data Sensor</h2>
-                <div class="sensor"><strong>PH:</strong> <span id="ph" class="highlight"></span></div>
-                <div class="sensor"><strong>DO:</strong> <span id="do" class="highlight"></span></div>
-                <div class="sensor"><strong>Suhu:</strong> <span id="suhu" class="highlight"></span></div>
+                <div class="sensor"><strong>PH:</strong> <span id="ph" class="highlight"></span> <span class="unit">pH</span></div>
+                <div class="sensor"><strong>DO:</strong> <span id="do" class="highlight"></span> <span class="unit">mg/L</span></div>
+                <div class="sensor"><strong>Suhu:</strong> <span id="suhu" class="highlight"></span> <span class="unit">°C</span></div>
                 <div class="sensor"><strong>GPS Koordinat:</strong> <span id="gps-coordinates" class="highlight"></span></div>
-                <div class="sensor"><strong>Kompas:</strong> <span id="compass" class="highlight"></span></div>
+                <div class="sensor"><strong>Kompas:</strong> <span id="compass" class="highlight"></span> <span class="unit">°</span></div>
             </div>
             <footer>Data diperbarui setiap 2 detik</footer>
         </div>
@@ -41,11 +41,11 @@
 
         // Add markers with predefined coordinates
         var locations = [
-    {lat: 0.9264, lng: 104.4518, label: "Titik 1"}, // Dekat Pelabuhan Sri Bintan Pura
-    {lat: 0.9300, lng: 104.4550, label: "Titik 2"}, // Dekat Pantai Tanjung Siambang
-    {lat: 0.9250, lng: 104.4600, label: "Titik 3"}, // Dekat kawasan pantai lain
-    {lat: 0.9235, lng: 104.4700, label: "Titik 4"}  // Dekat pulau kecil di sekitar
-];
+            {lat: 0.9264, lng: 104.4518, label: "Titik 1"}, // Dekat Pelabuhan Sri Bintan Pura
+            {lat: 0.9300, lng: 104.4550, label: "Titik 2"}, // Dekat Pantai Tanjung Siambang
+            {lat: 0.9250, lng: 104.4600, label: "Titik 3"}, // Dekat kawasan pantai lain
+            {lat: 0.9235, lng: 104.4700, label: "Titik 4"}  // Dekat pulau kecil di sekitar
+        ];
 
         locations.forEach(function(location) {
             L.marker([location.lat, location.lng]).addTo(map)
@@ -93,7 +93,7 @@
             }
         }
 
-        // Update sensor data every 5 seconds
+        // Update sensor data every 2 seconds
         setInterval(updateSensorData, 2000);
     </script>
 </body>
