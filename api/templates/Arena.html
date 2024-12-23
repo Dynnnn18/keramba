@@ -39,21 +39,17 @@
             maxZoom: 19,
         }).addTo(map);
 
-        // Add circles with predefined coordinates
+        // Add markers with predefined coordinates
         var locations = [
-            {lat: 0.9264, lng: 104.4518, label: "Titik 1"},
-            {lat: 0.9300, lng: 104.4550, label: "Titik 2"},
-            {lat: 0.9250, lng: 104.4600, label: "Titik 3"},
-            {lat: 0.9235, lng: 104.4700, label: "Titik 4"}
-        ];
+    {lat: 0.9264, lng: 104.4518, label: "Titik 1"}, // Dekat Pelabuhan Sri Bintan Pura
+    {lat: 0.9300, lng: 104.4550, label: "Titik 2"}, // Dekat Pantai Tanjung Siambang
+    {lat: 0.9250, lng: 104.4600, label: "Titik 3"}, // Dekat kawasan pantai lain
+    {lat: 0.9235, lng: 104.4700, label: "Titik 4"}  // Dekat pulau kecil di sekitar
+];
 
         locations.forEach(function(location) {
-            L.circle([location.lat, location.lng], {
-                radius: 4, // Radius dalam meter
-                color: 'yellow',
-                fillColor: 'yellow',
-                fillOpacity: 0.5
-            }).addTo(map).bindPopup(location.label);
+            L.marker([location.lat, location.lng]).addTo(map)
+                .bindPopup(location.label);
         });
 
         // Add GPS marker
@@ -97,7 +93,7 @@
             }
         }
 
-        // Update sensor data every 2 seconds
+        // Update sensor data every 5 seconds
         setInterval(updateSensorData, 2000);
     </script>
 </body>
