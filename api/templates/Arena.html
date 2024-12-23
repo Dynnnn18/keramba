@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maps and Sensor Data</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9f5ff;
+        }
+        header {
+            text-align: center;
+            background: #4a90e2;
+            color: white;
+            padding: 15px 0;
+            font-size: 2em;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #content {
+            display: flex;
+            flex: 1;
+        }
+        #map {
+            flex: 2;
+            height: 100%;
+        }
+        #sensor-data {
+            flex: 1;
+            padding: 20px;
+            background: linear-gradient(to bottom, #ffffff, #d8ecf9);
+            border-left: 3px solid #4a90e2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        h2 {
+            margin: 0;
+            color: #1e5781;
+            text-align: center;
+            border-bottom: 2px solid #4a90e2;
+            padding-bottom: 10px;
+            font-size: 1.5em;
+        }
+        .sensor {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
+            padding: 10px;
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            background: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .sensor strong {
+            color: #1e5781;
+        }
+        footer {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            padding: 10px;
+            border-top: 2px solid #4a90e2;
+            background: #e0f0f8;
+        }
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        AUTONOMOUS FISHCAGE<br>
+        UNIVERSITAS MARITIM RAJA ALI HAJI
+    </header>
+    <div id="content">
+        <div id="map"></div>
+        <div id="sensor-data">
+            <div>
+                <h2>Data Sensor</h2>
+                <div class="sensor"><strong>PH:</strong> <span id="ph" class="highlight">7.2</span></div>
+                <div class="sensor"><strong>DO:</strong> <span id="do" class="highlight">8.5 mg/L</span></div>
+                <div class="sensor"><strong>Suhu:</strong> <span id="suhu" class="highlight">27°C</span></div>
+                <div class="sensor"><strong>GPS Koordinat:</strong> <span id="gps-coordinates" class="highlight">-1.53, 102.05</span></div>
+                <div class="sensor"><strong>Kompas:</strong> <span id="compass" class="highlight">90°</span></div>
+            </div>
+            <footer>Data diperbarui setiap 5 detik</footer>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([-1.5, 102.0], 10);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Add markers with coordinates
+        var locations = [
+            {lat: -1.49, lng: 102.01, label: "Titik 1"},
+            {lat: -1.50, lng: 102.02, label: "Titik 2"},
+            {lat: -1.51, lng: 102.03, label: "Titik 3"},
+            {lat: -1.52, lng: 102.04, label: "Titik 4"}
+        ];
+
+        locations.forEach(function(location) {
+            L.marker([location.lat, location.lng]).addTo(map)
+                .bindPopup(location.label);
+        });
+
+        // Add GPS marker and compass direction
+        var gpsMarker = L.circleMarker([-1.53, 102.05], {
+            radius: 8,
+            color: 'blue',
+            fillColor: 'blue',
+            fillOpacity: 0.5
+        }).addTo(map).bindPopup("GPS Sensor");
+
+        // Draw compass direction as a dashed line
+        var compassLine = L.polyline([[-1.53, 102.05], [-1.54, 102.06]], {
+            color: 'red',
+            dashArray: '5, 5',
+            weight: 2
+        }).addTo(map);
+
+        // Simulate dynamic updates for sensor data, GPS, and compass
+        function updateSensorData() {
+            document.getElementById('ph').textContent = (6.5 + Math.random() * 1.5).toFixed(2);
+            document.getElementById('do').textContent = (8 + Math.random()).toFixed(2) + ' mg/L';
+            document.getElementById('suhu').textContent = (25 + Math.random() * 5).toFixed(1) + '°C';
+
+            // Update GPS coordinates
+            var newLat = -1.53 + (Math.random() - 0.5) * 0.01;
+            var newLng = 102.05 + (Math.random() - 0.5) * 0.01;
+            document.getElementById('gps-coordinates').textContent = newLat.toFixed(5) + ', ' + newLng.toFixed(5);
+            gpsMarker.setLatLng([newLat, newLng]);
+
+            // Update compass direction
+            var newAngle = Math.floor(Math.random() * 360);
+            document.getElementById('compass').textContent = newAngle + '°';
+
+            // Update compass line
+            var compassLength = 0.01; // Adjust length as needed
+            var endLat = newLat + compassLength * Math.cos(newAngle * Math.PI / 180);
+            var endLng = newLng + compassLength * Math.sin(newAngle * Math.PI / 180);
+            compassLine.setLatLngs([[newLat, newLng], [endLat, endLng]]);
+        }
+
+        setInterval(updateSensorData, 5000); // Update every 5 seconds
+    </script>
+</body>
+</html>
