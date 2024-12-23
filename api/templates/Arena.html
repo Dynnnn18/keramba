@@ -23,6 +23,7 @@
                 <div class="sensor"><strong>Suhu:</strong> <span id="suhu" class="highlight"></span> <span class="unit">°C</span></div>
                 <div class="sensor"><strong>GPS Koordinat:</strong> <span id="gps-coordinates" class="highlight"></span></div>
                 <div class="sensor"><strong>Kompas:</strong> <span id="compass" class="highlight"></span> <span class="unit">°</span></div>
+                <div class="sensor"><strong>Status:</strong> <span id="status" class="highlight"></span></div>
             </div>
             <footer>Data diperbarui setiap 2 detik</footer>
         </div>
@@ -79,6 +80,7 @@
                 document.getElementById('suhu').textContent = data.suhu || 'N/A';
                 document.getElementById('gps-coordinates').textContent = `${data.gps.lat}, ${data.gps.lng}`;
                 document.getElementById('compass').textContent = data.compass || 'N/A';
+                document.getElementById('status').textContent = data.status || 'N/A'; // Update status
 
                 // Update GPS marker on map
                 gpsMarker.setLatLng([data.gps.lat, data.gps.lng]);
