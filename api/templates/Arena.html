@@ -41,11 +41,11 @@
 
         // Add markers with predefined coordinates
         var locations = [
-            {lat: -1.49, lng: 102.01, label: "Titik 1"},
-            {lat: -1.50, lng: 102.02, label: "Titik 2"},
-            {lat: -1.51, lng: 102.03, label: "Titik 3"},
-            {lat: -1.52, lng: 102.04, label: "Titik 4"}
-        ];
+    {lat: 0.9264, lng: 104.4518, label: "Titik 1"}, // Dekat Pelabuhan Sri Bintan Pura
+    {lat: 0.9300, lng: 104.4550, label: "Titik 2"}, // Dekat Pantai Tanjung Siambang
+    {lat: 0.9250, lng: 104.4600, label: "Titik 3"}, // Dekat kawasan pantai lain
+    {lat: 0.9235, lng: 104.4700, label: "Titik 4"}  // Dekat pulau kecil di sekitar
+];
 
         locations.forEach(function(location) {
             L.marker([location.lat, location.lng]).addTo(map)
